@@ -48,7 +48,7 @@ class CallbackIDFC extends CI_Controller
 
                 if (! empty($PayerMobileNumber))
                 {
-                    $url = "http://65.0.3.90:8000/v1/callbacks/IDFC_callback";
+                    $url = "http://139.59.76.214:8000/v1/callbacks/IDFC_callback";
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, $url);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -61,7 +61,9 @@ class CallbackIDFC extends CI_Controller
                     $result = curl_exec($ch);
                     if(! empty($result))
                     {
-                        $output = $result;
+                        $output['code'] = '200';
+                        $output['status'] = 'SUCCES';
+                        $output ['details'] = array();
                     }
                     else
                     {
@@ -95,18 +97,12 @@ class CallbackIDFC extends CI_Controller
             $error = 'Only POST Methods are allowed';
                 
         } 
-        $method = $this->input->method();
-        $url = current_url();
-        $request = $this->input->post(); // Adjust based on your request handling
-        $response = $output; // Adjust based on your response handling
-
-        $this->load->helper('source_helper');
-        log_api_call($method, $url, $request, $response);
+        
         ignore_user_abort(true);
         header("Content-type: text/json; charset=utf-8");
         header('Connection: close');
         header("Access-Control-Allow-Origin:*");
-        echo $output;
+        echo json_encode($output);
         flush();
 	}
 }

@@ -4,7 +4,7 @@ class Bill_validation extends CI_Controller
     function __construct()
     {
         parent::__construct();
-        
+        $this->load->config('secrets');
     }
 
 	public function index()
@@ -33,38 +33,7 @@ class Bill_validation extends CI_Controller
                 {
                             
                     /* * ************************************************************ */
-                    // $plainText = '<?xml version="1.0" encoding="UTF-8"
-                    //     <billValidationRequest>
-                    //         <agentId>'.$agentID.'</agentId>
-                    //         <agentDeviceInfo>
-                    //             <ip>'.$ip.'</ip>
-                    //             <initChannel>AGT</initChannel>
-                    //             <mac>'.$mac.'</mac>
-                    //         </agentDeviceInfo>
-                    //         <customerInfo>
-                    //             <customerMobile>'.$customerMobile.'</customerMobile>
-                    //             <customerEmail></customerEmail>
-                    //             <customerAdhaar></customerAdhaar>
-                    //             <customerPan></customerPan>
-                    //         </customerInfo>
-                    //         <billerId>'.$billerID.'</billerId>
-                    //         <inputParams>';
-                    // if(!empty($billerParamInfo))
-                    // {
-                    //     foreach($billerParamInfo as $params)
-                    //     {
-                    //         $input = '<input>
-                    //                     <paramName>'.$params['paramName'].'</paramName>
-                    //                     <paramValue>'.$params['paramValue'].'</paramValue>
-                    //                 </input>';
-                    //         $plainText = $plainText . $input;     
-                    //     }
-                    //     $plainText = $plainText.'</inputParams>';
-                    // }   
-                    // else{
-                    //     $plainText = $plainText.'</inputParams>';
-                    // }  
-                    // $plainText = $plainText.'</billValidationRequest>'; 
+                    
                     $plainText = '<?xml version="1.0" encoding="UTF-8"?><billValidationRequest><agentId>CC01CC01513515340681</agentId><billerId>OTNS00005XXZ43</billerId><inputParams><input><paramName>a</paramName><paramValue>10</paramValue></input><input><paramName>a b</paramName><paramValue>20</paramValue></input><input><paramName>a b c</paramName><paramValue>30</paramValue></input><input><paramName>a b c d</paramName><paramValue>40</paramValue></input><input><paramName>a b c d e</paramName><paramValue>50</paramValue></input></inputParams></billValidationRequest>'; 
                     $key = "43A55AF88A1BF58F73E36C791784FADC";
                     $encrypt_xml_data = encrypt($plainText, $key);
@@ -76,6 +45,30 @@ class Bill_validation extends CI_Controller
 
                     $parameters = http_build_query($data);
                     $url = "https://stgapi.billavenue.com/billpay/extBillValCntrl/billValidationRequest/xml?" . $parameters;
+                    
+                    $inputParamsXml = '';
+    
+                    // Iterate through each parameter in the billerParamInfo array
+                    foreach ($billerParamInfo as $param) {
+                        // Check if the array contains both paramName and paramValue
+                        if (isset($param['paramName']) && isset($param['paramValue'])) {
+                            // Append the XML element for the parameter
+                            $inputParamsXml .= '<input><paramName>' . htmlspecialchars($param['paramName'], ENT_XML1, 'UTF-8') . '</paramName><paramValue>' . htmlspecialchars($param['paramValue'], ENT_XML1, 'UTF-8') . '</paramValue></input>';
+                        }
+                    }
+                    $plainText = '<?xml version="1.0" encoding="UTF-8"?><billValidationRequest><agentId>' . htmlspecialchars($agentID, ENT_XML1, 'UTF-8') . '</agentId><agentDeviceInfo><ip>' . htmlspecialchars($ip, ENT_XML1, 'UTF-8') . '</ip><initChannel>AGT</initChannel><mac>' . htmlspecialchars($mac, ENT_XML1, 'UTF-8') . '</mac></agentDeviceInfo><customerInfo><customerMobile>' . htmlspecialchars($customerMobile, ENT_XML1, 'UTF-8') . '</customerMobile><customerEmail></customerEmail><customerAdhaar></customerAdhaar><customerPan></customerPan></customerInfo><billerId>' . htmlspecialchars($billerID, ENT_XML1, 'UTF-8') . '</billerId><inputParams>' . $inputParamsXml . '</inputParams></billValidationRequest>';
+                    
+                    $key = $this->config->item('key');
+                    $encrypt_xml_data = encrypt($plainText, $key);
+                    $data['accessCode'] = $this->config->item('accessCode');
+                    $data['requestId'] = generateRandomString();
+                    $data['ver'] = "1.0";
+                    $data['instituteId'] = $this->config->item('instituteId');
+                    $data['encRequest'] = $encrypt_xml_data;
+
+                    $parameters = http_build_query($data);
+                    $url = $this->config->item('Bill_Fetch_URL') . $parameters;
+                    
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, $url);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

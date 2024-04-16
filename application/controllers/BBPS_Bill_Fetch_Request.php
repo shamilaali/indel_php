@@ -4,7 +4,7 @@ class Bill_Fetch_Request extends CI_Controller
     function __construct()
     {
         parent::__construct();
-        
+        $this->load->config('secrets');
     }
 
 	public function index()
@@ -33,31 +33,28 @@ class Bill_Fetch_Request extends CI_Controller
                 {
                             
                     /* * ************************************************************ */
-                    // $plainText = '<?xml version="1.0" encoding="UTF-8"<billFetchRequest><agentId>'.$agentID.'</agentId><agentDeviceInfo><ip>'.$ip.'</ip><initChannel>AGT</initChannel><mac>'.$mac.'</mac></agentDeviceInfo><customerInfo><customerMobile>'.$customerMobile.'</customerMobile><customerEmail></customerEmail><customerAdhaar></customerAdhaar><customerPan></customerPan></customerInfo><billerId>'.$billerID.'</billerId><inputParams>';
-                    // if(!empty($billerParamInfo))
-                    // {
-                    //     foreach($billerParamInfo as $params)
-                    //     {
-                    //         $input = '<input><paramName>'.$params['paramName'].'</paramName><paramValue>'.$params['paramValue'].'</paramValue></input>';
-                    //         $plainText = $plainText . $input;     
-                    //     }
-                    //     $plainText = $plainText.'</inputParams>';
-                    // }   
-                    // else{
-                    //     $plainText = $plainText.'</inputParams>';
-                    // }  
-                    // $plainText = $plainText.'</billFetchRequest>';  
-                    $plainText = '<?xml version="1.0" encoding="UTF-8"?><billFetchRequest><agentId>CC01CC01513515340681</agentId><agentDeviceInfo><ip>192.168.2.73</ip><initChannel>AGT</initChannel><mac>01-23-45-67-89-ab</mac></agentDeviceInfo><customerInfo><customerMobile>9898990084</customerMobile><customerEmail></customerEmail><customerAdhaar></customerAdhaar><customerPan></customerPan></customerInfo><billerId>OTME00005XXZ43</billerId><inputParams><input><paramName>a</paramName><paramValue>10</paramValue></input><input><paramName>a b</paramName><paramValue>20</paramValue></input><input><paramName>a b c</paramName><paramValue>30</paramValue></input><input><paramName>a b c d</paramName><paramValue>40</paramValue></input> <input><paramName>a b c d e</paramName><paramValue>50</paramValue></input></inputParams></billFetchRequest>';
-                    $key = "43A55AF88A1BF58F73E36C791784FADC";
+                    $inputParamsXml = '';
+    
+                    // Iterate through each parameter in the billerParamInfo array
+                    foreach ($billerParamInfo as $param) {
+                        // Check if the array contains both paramName and paramValue
+                        if (isset($param['paramName']) && isset($param['paramValue'])) {
+                            // Append the XML element for the parameter
+                            $inputParamsXml .= '<input><paramName>' . htmlspecialchars($param['paramName'], ENT_XML1, 'UTF-8') . '</paramName><paramValue>' . htmlspecialchars($param['paramValue'], ENT_XML1, 'UTF-8') . '</paramValue></input>';
+                        }
+                    }
+                    $plainText = '<?xml version="1.0" encoding="UTF-8"?><billFetchRequest><agentId>' . htmlspecialchars($agentID, ENT_XML1, 'UTF-8') . '</agentId><agentDeviceInfo><ip>' . htmlspecialchars($ip, ENT_XML1, 'UTF-8') . '</ip><initChannel>AGT</initChannel><mac>' . htmlspecialchars($mac, ENT_XML1, 'UTF-8') . '</mac></agentDeviceInfo><customerInfo><customerMobile>' . htmlspecialchars($customerMobile, ENT_XML1, 'UTF-8') . '</customerMobile><customerEmail></customerEmail><customerAdhaar></customerAdhaar><customerPan></customerPan></customerInfo><billerId>' . htmlspecialchars($billerID, ENT_XML1, 'UTF-8') . '</billerId><inputParams>' . $inputParamsXml . '</inputParams></billFetchRequest>';
+                    
+                    $key = $this->config->item('key');
                     $encrypt_xml_data = encrypt($plainText, $key);
-                    $data['accessCode'] = "AVMT56UX61KE89CKUW";
+                    $data['accessCode'] = $this->config->item('accessCode');
                     $data['requestId'] = generateRandomString();
                     $data['ver'] = "1.0";
-                    $data['instituteId'] = "IM66";
+                    $data['instituteId'] = $this->config->item('instituteId');
                     $data['encRequest'] = $encrypt_xml_data;
 
                     $parameters = http_build_query($data);
-                    $url = "https://stgapi.billavenue.com/billpay/extBillCntrl/billFetchRequest/xml?" . $parameters;
+                    $url = $this->config->item('Bill_Fetch_URL') . $parameters;
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, $url);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -68,16 +65,13 @@ class Bill_Fetch_Request extends CI_Controller
                     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
                     $result = curl_exec($ch);
-                    // echo 'Encrypted Response: ' . $result . "<br><br>";
                     $response = decrypt($result, $key);
-                    // echo "<pre>";
-                    // echo htmlentities($response);
-                    // exit;      
+                     
                     if(! empty($response))
                     {
                         $output['code'] = '200';
                         $output['status'] = 'Success';
-                        $output['message'] = 'Biller Info fetched succesfully';
+                        $output['message'] = 'Bill Fetch Request success';
                         $output['details'] = array(
                                                     'url'=> $url,
                                                     'parameters'=> $data,
@@ -92,7 +86,7 @@ class Bill_Fetch_Request extends CI_Controller
                         $output['code'] = '400';
                         $output['status'] = 'FAILURE';
                         $error = 'Biller info not found';
-                        $output['message'] = 'Biller info not found';
+                        $output['message'] = 'Bill Fetch Request Failed';
                         $output['details'] = array(
                             'url'=> $url,
                             'InputXML' => $plainText,

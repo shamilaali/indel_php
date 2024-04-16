@@ -2,7 +2,7 @@
 if (!defined('BASEPATH')) exit('Access denied. Stop the script access');
 
 
-include 'Authentication.php';
+include 'IDFC_Authentication.php';
 
 class IDFC_Transaction_status extends CI_Controller 
 {
@@ -28,23 +28,16 @@ class IDFC_Transaction_status extends CI_Controller
             if (json_last_error() === JSON_ERROR_NONE)
             {
                 $transactionReferenceNo = $object["transactionReferenceNo"] ?? "";
-                $creditAccountNumber = $object["creditAccountNumber"] ?? "";
-                $amount = $object["amount"] ?? "";
-                $paymentDescription = $object["paymentDescription"] ?? "";
-                $beneficiaryIFSC = $object["beneficiaryIFSC"] ?? "";
-                $beneficiaryName = $object["beneficiaryName"] ?? "";
-                $beneficiaryAddress = $object["beneficiaryAddress"] ?? "";
-                $emailID = $object["emailID"] ?? "";
-                $mobileNo = $object["mobileNo"] ?? "";
+                $transactionDate = $object["transactionDate"] ?? "";
 
-                if (!empty($transactionID) && !empty($creditAccountNumber))
+                if (!empty($transactionReferenceNo) && !empty($transactionDate))
                 {
                     $json_data = array(
                         "paymentTransactionStatusReq"=> array(
                             "transactionType"=> "IMPS",
-                            "transactionReferenceNumber"=> "20221610030034",
+                            "transactionReferenceNumber"=> $transactionReferenceNo,
                             "paymentReferenceNumber"=> "",
-                            "transactionDate"=> "07072022"
+                            "transactionDate"=> $transactionDate
                         )
                         );
                    
@@ -75,7 +68,7 @@ class IDFC_Transaction_status extends CI_Controller
                     
                     // Call the authentication method to get the token
      
-                    $authObj = new Authentication();                   
+                    $authObj = new IDFC_Authentication();                   
                     $token = $authObj->index();
                     $token = json_decode($token, true);
                     $access_token = $token['access_token'];
@@ -122,6 +115,7 @@ class IDFC_Transaction_status extends CI_Controller
                     $output['details'] = array(
                                                     'url'=> $url,
                                                     'InputJson' => $json_string,
+                                                    'header' => $headers,
                                                     'encRequest'=> $reqbody,
                                                     'encResponse' => $response,
                                                     'decResponse' => $decrypted

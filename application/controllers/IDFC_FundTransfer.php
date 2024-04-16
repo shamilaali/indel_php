@@ -2,9 +2,9 @@
 if (!defined('BASEPATH')) exit('Access denied. Stop the script access');
 
 
-include 'Authentication.php';
+include 'IDFC_Authentication.php';
 
-class FundTransfer extends CI_Controller 
+class IDFC_FundTransfer extends CI_Controller 
 {
     function __construct()
     {
@@ -83,7 +83,7 @@ class FundTransfer extends CI_Controller
                     
                     // Call the authentication method to get the token
      
-                    $authObj = new Authentication();                   
+                    $authObj = new IDFC_Authentication();                   
                     $token = $authObj->index();
                     $token = json_decode($token, true);
                     $access_token = $token['access_token'];
@@ -130,6 +130,7 @@ class FundTransfer extends CI_Controller
                     $output['details'] = array(
                                                     'url'=> $url,
                                                     'InputJson' => $json_string,
+                                                    'header' => $headers,
                                                     'encRequest'=> $reqbody,
                                                     'encResponse' => $response,
                                                     'decResponse' => $decrypted

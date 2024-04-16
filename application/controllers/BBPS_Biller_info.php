@@ -4,6 +4,7 @@ class Biller_info extends CI_Controller
     function __construct()
     {
         parent::__construct();
+        $this->load->config('secrets');
         
     }
 
@@ -22,25 +23,48 @@ class Biller_info extends CI_Controller
                 
             if (json_last_error() === JSON_ERROR_NONE)
             {
+               
                 $billerID = $object["billerID"];
                 
-
                 if (! empty($billerID))
                 {
                             
                     /* * ************************************************************ */
                     /* * ************************************************************ */
                     /* * ************************************************************ */
-                    $plainText = '<?xml version="1.0" encoding="UTF-8"?><billerInfoRequest><billerId>'.$billerID.'</billerId></billerInfoRequest>';
-                    $key = "43A55AF88A1BF58F73E36C791784FADC";
+                    if (isset($object["billerID"]) && is_array($object["billerID"])) {
+                        // Initialize an empty string to hold multiple biller IDs in XML format
+                        $billerIDsXml = '';
+                        
+                        // Iterate through each biller ID in the array
+                        foreach ($object["billerID"] as $billerID) {
+                            // Append each biller ID in the XML format
+                            $billerIDsXml .= '<billerId>' . htmlspecialchars($billerID, ENT_XML1, 'UTF-8') . '</billerId>';
+                        }
+                        
+                        // Create the plain text XML with all the biller IDs
+                        $plainText = '<?xml version="1.0" encoding="UTF-8"?><billerInfoRequest>' . $billerIDsXml . '</billerInfoRequest>';
+                    } 
+                    else {
+                        // If $billerID is not an array, handle as a single ID
+                        if (isset($object["billerID"])) {
+                            $billerID = htmlspecialchars($object["billerID"], ENT_XML1, 'UTF-8');
+                            $plainText = '<?xml version="1.0" encoding="UTF-8"?><billerInfoRequest><billerId>' . $billerID . '</billerId></billerInfoRequest>';
+                        } else {
+                            // If $object["billerID"] is not set or is empty, set $plainText to null
+                            $plainText = null;
+                        }
+                    }
+                    
+                    $key = $this->config->item('key');
                     $encrypt_xml_data = encrypt($plainText, $key);
-                    $data['accessCode'] = "AVMT56UX61KE89CKUW";
+                    $data['accessCode'] = $this->config->item('accessCode');
                     $data['requestId'] = generateRandomString();
                     $data['ver'] = "1.0";
-                    $data['instituteId'] = "IM66";
+                    $data['instituteId'] = $this->config->item('instituteId');
 
                     $parameters = http_build_query($data);
-                    $url = "https://stgapi.billavenue.com/billpay/extMdmCntrl/mdmRequestNew/xml?" . $parameters;
+                    $url = $this->config->item('Biller_MDM_URL') . $parameters;
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, $url);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -51,11 +75,7 @@ class Biller_info extends CI_Controller
                     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
                     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
                     $result = curl_exec($ch);
-                    // echo 'Encrypted Response: ' . $result . "<br><br>";
-                    $response = decrypt($result, $key);
-                    // echo "<pre>";
-                    // echo htmlentities($response);
-                    // exit;      
+                    $response = decrypt($result, $key); 
                     if(! empty($response))
                     {
                         $output['code'] = '200';

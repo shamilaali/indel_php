@@ -1,5 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('Access denied. Stop the script access');
-class Biller_info extends CI_Controller 
+class BBPS_Biller_info extends CI_Controller 
 {
     function __construct()
     {

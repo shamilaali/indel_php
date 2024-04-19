@@ -1,5 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('Access denied. Stop the script access');
-class Transaction_status_check extends CI_Controller 
+class BBPS_Transaction_status_check extends CI_Controller 
 {
     function __construct()
     {

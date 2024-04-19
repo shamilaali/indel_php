@@ -1,5 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('Access denied. Stop the script access');
-class Complaint_tracking extends CI_Controller 
+class BBPS_Complaint_tracking extends CI_Controller 
 {
     function __construct()
     {

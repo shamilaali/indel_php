@@ -1,5 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('Access denied. Stop the script access');
-class Bill_quick_pay_request extends CI_Controller 
+class BBPS_Bill_quick_pay_request extends CI_Controller 
 {
     function __construct()
     {

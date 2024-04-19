@@ -4,7 +4,7 @@ class Complaint_registration extends CI_Controller
     function __construct()
     {
         parent::__construct();
-        
+        $this->load->config('secrets');
     }
 
 	public function index()
@@ -32,16 +32,17 @@ class Complaint_registration extends CI_Controller
                 {
                     
                     $plainText = '<?xml version="1.0" encoding="UTF-8"?><complaintRegistrationReq><complaintType>Transaction</complaintType><participationType></participationType><agentId></agentId><txnRefId>'.$txnRefId.'</txnRefId><billerId></billerId><complaintDesc>'.$complaintDesc.'</complaintDesc><servReason></servReason><complaintDisposition>'.$complaintdisposition.'</complaintDisposition></complaintRegistrationReq>';
-                     $key = "43A55AF88A1BF58F73E36C791784FADC";
+                    
+                    $key = $this->config->item('key');
                     $encrypt_xml_data = encrypt($plainText, $key);
-                    $data['accessCode'] = "AVMT56UX61KE89CKUW";
+                    $data['accessCode'] = $this->config->item('accessCode');
                     $data['requestId'] = generateRandomString();
                     $data['ver'] = "1.0";
-                    $data['instituteId'] = "IM66";
+                    $data['instituteId'] = $this->config->item('instituteId');
                     $data['encRequest'] = $encrypt_xml_data;
 
                     $parameters = http_build_query($data);
-                    $url = "https://stgapi.billavenue.com/billpay/extComplaints/register/xml?" . $parameters;
+                    $url = $this->config->item('Complaint_Registration_URL') . $parameters;
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, $url);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

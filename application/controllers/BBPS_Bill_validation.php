@@ -33,19 +33,29 @@ class Bill_validation extends CI_Controller
                 {
                             
                     /* * ************************************************************ */
+                    $inputParamsXml = '';
+    
+                    // Iterate through each parameter in the billerParamInfo array
+                    foreach ($billerParamInfo as $param) {
+                        // Check if the array contains both paramName and paramValue
+                        if (isset($param['paramName']) && isset($param['paramValue'])) {
+                            // Append the XML element for the parameter
+                            $inputParamsXml .= '<input><paramName>' . htmlspecialchars($param['paramName'], ENT_XML1, 'UTF-8') . '</paramName><paramValue>' . htmlspecialchars($param['paramValue'], ENT_XML1, 'UTF-8') . '</paramValue></input>';
+                        }
+                    }
+                    $plainText = '<?xml version="1.0" encoding="UTF-8"?><billValidationRequest><agentId>' . htmlspecialchars($agentID, ENT_XML1, 'UTF-8') . '</agentId><billerId>' . htmlspecialchars($billerID, ENT_XML1, 'UTF-8') . '</billerId><inputParams>' . $inputParamsXml . '</inputParams></billValidationRequest>';
                     
-                    $plainText = '<?xml version="1.0" encoding="UTF-8"?><billValidationRequest><agentId>CC01CC01513515340681</agentId><billerId>OTNS00005XXZ43</billerId><inputParams><input><paramName>a</paramName><paramValue>10</paramValue></input><input><paramName>a b</paramName><paramValue>20</paramValue></input><input><paramName>a b c</paramName><paramValue>30</paramValue></input><input><paramName>a b c d</paramName><paramValue>40</paramValue></input><input><paramName>a b c d e</paramName><paramValue>50</paramValue></input></inputParams></billValidationRequest>'; 
-                    $key = "43A55AF88A1BF58F73E36C791784FADC";
+                    $key = $this->config->item('key');
                     $encrypt_xml_data = encrypt($plainText, $key);
-                    $data['accessCode'] = "AVMT56UX61KE89CKUW";
+                    $data['accessCode'] = $this->config->item('accessCode');
                     $data['requestId'] = generateRandomString();
                     $data['ver'] = "1.0";
-                    $data['instituteId'] = "IM66";
+                    $data['instituteId'] = $this->config->item('instituteId');
                     $data['encRequest'] = $encrypt_xml_data;
 
                     $parameters = http_build_query($data);
-                    $url = "https://stgapi.billavenue.com/billpay/extBillValCntrl/billValidationRequest/xml?" . $parameters;
-                    
+                    $url = $this->config->item('Bill_validation_URL') . $parameters;
+
                     $inputParamsXml = '';
     
                     // Iterate through each parameter in the billerParamInfo array
@@ -67,7 +77,7 @@ class Bill_validation extends CI_Controller
                     $data['encRequest'] = $encrypt_xml_data;
 
                     $parameters = http_build_query($data);
-                    $url = $this->config->item('Bill_Fetch_URL') . $parameters;
+                    $url = $this->config->item('Bill_validation_URL') . $parameters;
                     
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, $url);

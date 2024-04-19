@@ -4,7 +4,7 @@ class Transaction_status_check extends CI_Controller
     function __construct()
     {
         parent::__construct();
-        
+        $this->load->config('secrets');
     }
 
 	public function index()
@@ -39,21 +39,20 @@ class Transaction_status_check extends CI_Controller
                         $plainText = '<?xml version="1.0" encoding="UTF-8"?><transactionStatusReq><trackType>'.$trackType.'</trackType><trackValue>'.$trackValue.'</trackValue><fromDate>'.$fromDate.'</fromDate><toDate>'.$toDate.'</toDate></transactionStatusReq>';
                     
                     }
-                    $key = "43A55AF88A1BF58F73E36C791784FADC";
+                    $key = $this->config->item('key');
                     $encrypt_xml_data = encrypt($plainText, $key);
-                    $data['accessCode'] = "AVMT56UX61KE89CKUW";
+                    $data['accessCode'] = $this->config->item('accessCode');
                     $data['requestId'] = generateRandomString();
                     $data['ver'] = "1.0";
-                    $data['instituteId'] = "IM66";
+                    $data['instituteId'] = $this->config->item('instituteId');
                     $data['encRequest'] = $encrypt_xml_data;
 
                     $parameters = http_build_query($data);
-                    $url = "https://stgapi.billavenue.com/billpay/transactionStatus/fetchInfo/xml?" . $parameters;
+                    $url = $this->config->item('Transaction_Status') . $parameters;
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, $url);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($ch, CURLOPT_POST, true);
-                    // curl_setopt($ch, CURLOPT_POSTFIELDS, $encrypt_xml_data);
                     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/xml'));
                     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

@@ -42,7 +42,8 @@ class IDFC_FundTransfer extends CI_Controller
                     $json_data = array(
                         "initiateAuthGenericFundTransferAPIReq" => array(
                             "transactionID" => $transactionID,
-                            "debitAccountNumber" => "21488391569",
+                            // "debitAccountNumber" => "21488391569",
+                            "debitAccountNumber" => "96271102170",
                             "creditAccountNumber" => $creditAccountNumber,
                             "remitterName" => "Indel Test",
                             "amount" => $amount,

@@ -8,8 +8,9 @@ class IDFC_Authentication
         $header = [
             'alg' => 'RS256',
             'typ' => 'JWT',
-            'kid' => '6cc1daa5-039f-44f3-bc5c-9c4741a0fa79'
+            'kid' => '80698342-2a62-4eaf-8560-fa27fad9a698'
         ];
+        
         $currentTimestamp = time();
 
         $next30MinutesTimestamp = $currentTimestamp + 1800;
@@ -24,58 +25,60 @@ class IDFC_Authentication
         // Payload
         $payload = [
             'jti' => $randomString,
-            'sub' => 'a55cc9cf-ddb9-45b2-ad66-863a47fa659e',
-            'iss' => 'a55cc9cf-ddb9-45b2-ad66-863a47fa659e',
-            'aud' => 'https://app.uat-opt.idfcfirstbank.com/platform/oauth/oauth2/token',
+            'sub' => 'ee75143d-d3b5-441a-b747-7f8cce15af82',
+            'iss' => 'ee75143d-d3b5-441a-b747-7f8cce15af82',
+            // 'aud' => 'https://app.uat-opt.idfcfirstbank.com/platform/oauth/oauth2/token',
+            'aud' => 'https://app.my.idfcfirstbank.com/platform/oauth/oauth2/token',
             'exp' => intval($utcTime)
         ];
-
-        // Private key
+        
         $private_key = <<<EOD
-        -----BEGIN RSA PRIVATE KEY-----
-        MIIEogIBAAKCAQEAozKQxPxhQNYpCFqjq03/FFDduAa9avZM8cRKpYGWPQEai7zu
-        Tc5BvHsXSfuQinmIPLfjFT21P6xm5zceaCO3PEIKAXkJejrI8y9LxlUoRAqo1kZi
-        nfPEov31xMnKCauzx0Mqsu2fbVjHGDTXydjHjvSG7isU4gXe8FGcPdCMjxoLl39a
-        402URvi4KWUr7zcofcAfxVxGn4+z1rv2q7URIqrtIRkX9786lBPtLFzpTUDmyTI2
-        9LE1a/mtb9WcLSPuVPZr0TYeFRgDzw8uqJu+uhAS/cTzPUyjZSGLAQjQnE9bfkSb
-        0hYIeFHsCCtRlToj3fx5DH5oaNXO7LfFxVhT7wIDAQABAoIBAHKJjqlyKB+FLw85
-        7hzQhPIRP0tlD5P+gUo9ZdZ6+KKgH61rUCUzWVebXGEEOhG18jQLK0lBIfAqY55r
-        RN/6ESQthTA7brdmgpqK2ze7lKMMiCq7A4OwDpYGf3M53J6k72wua81gkMABytnm
-        XHzBtG1UmU6W1fU8AZfQ70NDFyNnGJvVjmmYbp3dZosRHXUFCPZ/nGaoNcQ8Se8N
-        U/CvWYt1VZ60OLnAL6tcwzgYdO9MWEjo4xqiAwNXCnFdAzRli4caL+HHjc1GYRRQ
-        ttpzAzheRuSTMlMxaQWeyt85Hp7MG6sulqhf7LdbtgYaA48t/jCHnGMZCNb5/2Cn
-        8xSfNeECgYEA2vykyJ+AYXAxOZfIjbjzBE4KtRmHnY8NEpU9D4mPTrkjnfueAIeS
-        TcdSbfzmcQhIdI0CIHfXfqrsYeD6x4ELzFtF9b/vQQo30WqdzMsGDhkOmOfoOyBu
-        O4HSei4UXcWLOC5X6Aj0j4WtM6Jxi4Np0j8189Nb8mUTTHj7AEpMfVUCgYEAvsf3
-        7GljOfj5j6n90IOX4gvRXNVY8ZJssGA+qHPPuTlsxBII/3M+IFGHYGQjbH5mwsCw
-        hZqhwh91AfR3HMu/cCihy7C/mNMbPzkWVQCX/vml3pu9M4CQJp5oEGl++tITZu2k
-        30r/Ycxqc2rHdMJZYiALqd/8hoibwlqVi7pN7DMCgYAJBZeUXF3hpcmhYct1a0U3
-        zC9MvryDlT0ootVdKoGo8J+zBoa/5tX0Nl4DAgRMa9bwVk7cH5PVOB18+tPaHErs
-        JGaBdWLZ/x3FlurhYQvi0M11Jzi+Ftvzv6l4NyXHpzfRHLeqa5QHxa4ZDnw3Dzbw
-        3oHOhcqn9doRsHpGzMjR8QKBgFxfjldVn8nOF2fMMyzmyn+UoUaFto8hCqdLsor1
-        qDpS56r34ItvTUFwuE+frNc3TKI3kkDeYjwP5yOPLq0uqf6wbcamSd7BOIwgJAP8
-        SZwXXIywc6egNCu+vzxTGDxxwxsvLYlAUu8TfudraC/MemLciUkzPp4VPvWXzpjd
-        GCWpAoGAAVaregaEWhsY2IOZdcC6sTbb/ZF7/zpm7dY9ElAG0JvyJ+5kuuSKFEQV
-        JZqFEZqE6zGQU6ILNuDyQcPjGQe3h5gdKG/2MEg36De2s4oX63faY9blb5/oqiIt
-        DXM5xREWFXUAlGL/mgBsqEUi9ocZJf9o2kh9z+aGdsqszmeQihE=
-        -----END RSA PRIVATE KEY-----
-        EOD;
+-----BEGIN RSA PRIVATE KEY-----
+MIIEogIBAAKCAQEAxID3b2Z5SLQkxiNIB6DCxk4vIZ1l8qUq6KO3iE/eOF9Deh2J
+uGSvpwfzKadN160J/+x1aLaPO5aU6MNPuUY6NBC5XuP/pTJeFt/yv7vuXGg7pHfJ
+bbZ4B/J/lG/44De468DKAuiCz93fH5nvgbiwN/ZXLgB6yt56K6wAYZRjURP3e7WS
+kBjNzx7t0FXTTQ3zn1ZpJ6rLfl7TOfQlIF2Msoapjp6PfIbhdzZGKcyiE+Ph6J4t
+DuaTWSnl9+0+1bS99wUaN+A94g8RSmhrjTMkREpCd9+1i7sVhJSqxvz/DT7gHXQo
+Q6x8smzUsj0b1jKzVqVwU7zIrchRpt880YrR2QIDAQABAoIBAF48Tu0wondYVM5k
+exWVZfL96aJgPlTYGrTIVqrbSoGUReLZKYOxXX9n05glMLJ+vG3sMv4NlrEH7M+X
+YrNCV4VCg/Naue26Mt8bdOm4MX5FSlz8STABMpz1EXPZIuw8LMV6hiZQ5PLUvz0D
+cJWwQWoFDBf2iOyjNsmcye4B4IMvjS9yIBLn3kQEnz1AaBH9AYXKjBQ4/900PF/o
+5y6UztOkmVSh5QLwGsXXWIE4Tx5gNXQIpM0sbefwlV5oYDQYENkSDBgKvnxhvdxa
+4w4IanU/48/PiEgCZnBPrmoO/sEmqlzC7sslHvpsVXXl24iPWBYWHWU7S+iT4VVx
+gANwXRECgYEA9KXAHnH/kcDblihaIm0YsIBs4Q9arZRq4d7Bcy3+i0cMNiB9hXAW
+fmUPfIdTe2fOCsn/J2JM3D/ejRvLqq5CLBNUhx0vxJVKA05dhb2GafQIHB/+/LM2
+7Mr9uFwQuvJ35Y6RZASUaREpLMb4mKaytENuuovzJnv7zPNi8g3Tvd0CgYEAzZ9N
+D4fNGUJ97gUvYO7ndbaPyYtwSDgZOCVvvmOPE3db4bMxDDmJ8PisApL7eUsBpj7e
+KHbnixg7P9h52lz10w0RpkT/YbGTHRGlZS49AqnF3AcQqBpIysuS1fW/sjyRoXX9
+wXfgPUXMNJZTTQYU+C467OnWce80TIUhuGKSGi0CgYABm+Fykc9bdwg6qZNGLK9/
+4ahVppMzFwnI6H0fM8s7wUDcTkRlD0KmnCWI7R7obdtWCNQLv0LAJA9joC4rti+r
+OIlSxiddRJoTAX3t9jwfEELJZJB5uvf+gKtAfiKCCDwvn0tne/w54KoDqF9UKax9
+MQBWa7syopgaVfNtohelZQKBgHJFVmkMGlIwXpWZchQXkLAdTdk+0Z6A9pr6Sxhu
+ccPqsDhFAjv9+gfd2pHvpytoILmH9KReOB1X0Q2RO168DK1GdQmHDLn5Gn2sIdOS
+F7vUJ644iuww90UkTyzyzp66BGDLlsMe4JKMqIiNBiwm9h5aasrgxRk6S0E/N1cm
+CHXdAoGAIC1CEKiuxlu4e7eJbGW5grUpHO8mDaMMdR0JihBBUXEw8gT7Jpe6Yp6a
+wbY7zJ9RwfHMjWP7I9tYVZyuUCTHRp2nEIoJFdW8AIClzc/CQEyrPN9I5LLpT/pO
+izAfh3vZGwOwD8WUnAVdYct321PYkyGUNvNFaM16hYnSyQUf9ds=
+-----END RSA PRIVATE KEY-----
+EOD;
+
+       
         
         try {
             // Generate JWT token
             $jwt_token = JWT::encode($payload, $private_key, 'RS256', null, $header);
             
-            $url = 'https://apiext.uat.idfcfirstbank.com/authorization/oauth2/token';
-
-            // Data to be sent in the request
+            // $url = 'https://apiext.uat.idfcfirstbank.com/authorization/oauth2/token';
+            $url = 'https://apiext.idfcfirstbank.com/authorization/oauth2/token';
+            
             $data = array(
                 'grant_type' => 'client_credentials',
-                'scope' => 'cmsapibridge-payments-executeTransaction paymenttxn-v1fundTransfer paymentenq-paymentTransactionStatus cmsapibridge-payments-enquirePaymentsDebitTransaction',
-                'client_id' => 'a55cc9cf-ddb9-45b2-ad66-863a47fa659e',
+                'scope' => 'paymenttxn-v1fundTransfer paymentenq-paymentTransactionStatus',
+                'client_id' => 'ee75143d-d3b5-441a-b747-7f8cce15af82',
                 'client_assertion_type' => 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
                 'client_assertion' => $jwt_token
             );
-
+           
             // Initialize cURL session
             $ch = curl_init($url);
 

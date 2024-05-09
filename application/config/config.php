@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://10.199.100.92/';
+$config['base_url'] = 'http://10.199.100.93/';
 // $config['base_url'] = 'https://client.chillarpayments.com/rechargeqatar/';
 
 //$config['base_url'] = 'http://dev.chillarcards.com/rechargeqatar/';

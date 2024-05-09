@@ -53,8 +53,8 @@ class IDFC_Transaction_status extends CI_Controller
                         // JSON data is not an array
                         die("Error: JSON data is not an array");
                     }
-                    $key = "77616d706c65496467134142536b659123616d706c65496468634145536b9637";
-                   
+                    // $key = "77616d706c65496467134142536b659123616d706c65496468634145536b9637";
+                    $key = "50616d706c62496466634145336b758073616d706c65496432426145536b0077";
                     $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
 
                     // Encrypt the data using AES-256-CBC cipher
@@ -79,12 +79,13 @@ class IDFC_Transaction_status extends CI_Controller
                     
                     $headers = [
                         "Content-Type: application/octet-stream",
-                        "Source: INM",
+                        "Source: IML",
                         "correlationId: {$randomString}",
                         "Authorization: Bearer {$access_token}",
                     ];
                     // Make the API call using cURL
-                    $url = 'https://apiext.uat.idfcfirstbank.com/paymentenqs/v1/paymentTransactionStatus';
+                    // $url = 'https://apiext.uat.idfcfirstbank.com/paymentenqs/v1/paymentTransactionStatus';
+                    $url = 'https://apiext.payments.idfcfirstbank.com/paymentenqs/v1/paymentTransactionStatus';
                     $ch = curl_init();
 
                     curl_setopt($ch, CURLOPT_URL, $url);

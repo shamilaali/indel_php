@@ -27,26 +27,34 @@ class IDFC_FundTransfer extends CI_Controller
                 
             if (json_last_error() === JSON_ERROR_NONE)
             {
+                
+                // $creditAccountNumber = $object["creditAccountNumber"] ?? "";
+                
+                // $beneficiaryIFSC = $object["beneficiaryIFSC"] ?? "";
+                // $beneficiaryName = $object["beneficiaryName"] ?? "";
+                // $beneficiaryAddress = $object["beneficiaryAddress"] ?? "";
+                // $debitAccountNumber = $object["debitAccountNumber"] ?? "";
                 $transactionID = $object["transactionID"] ?? "";
-                $creditAccountNumber = $object["creditAccountNumber"] ?? "";
-                $amount = $object["amount"] ?? "";
-                $paymentDescription = $object["paymentDescription"] ?? "";
-                $beneficiaryIFSC = $object["beneficiaryIFSC"] ?? "";
-                $beneficiaryName = $object["beneficiaryName"] ?? "";
-                $beneficiaryAddress = $object["beneficiaryAddress"] ?? "";
                 $emailID = $object["emailID"] ?? "";
                 $mobileNo = $object["mobileNo"] ?? "";
+                $amount = $object["amount"] ?? "";
+                $paymentDescription = $object["paymentDescription"] ?? "";
+                $creditAccountNumber = "6819002100001617";
+                $debitAccountNumber = "10019527465";
+                $beneficiaryIFSC = "PUNB0681900";
+                $beneficiaryName = "Indel";
+                $beneficiaryAddress = "KALAMASSERY";
 
                 if (!empty($transactionID) && !empty($creditAccountNumber))
                 {
                     $json_data = array(
                         "initiateAuthGenericFundTransferAPIReq" => array(
                             "transactionID" => $transactionID,
-                            // "debitAccountNumber" => "21488391569",
-                            "debitAccountNumber" => "96271102170",
+                            "debitAccountNumber" => $debitAccountNumber,
+                            // "debitAccountNumber" => "96271102170",
                             "creditAccountNumber" => $creditAccountNumber,
-                            "remitterName" => "Indel Test",
-                            "amount" => $amount,
+                            "remitterName" => "Indel Money Limited",
+                            "amount" => strval($amount),
                             "currency" => "INR",
                             "transactionType" => "IMPS",
                             "paymentDescription" => $paymentDescription,
@@ -69,8 +77,8 @@ class IDFC_FundTransfer extends CI_Controller
                         // JSON data is not an array
                         die("Error: JSON data is not an array");
                     }
-                    $key = "77616d706c65496467134142536b659123616d706c65496468634145536b9637";
-                   
+                    // $key = "77616d706c65496467134142536b659123616d706c65496468634145536b9637";
+                    $key = "50616d706c62496466634145336b758073616d706c65496432426145536b0077";
                     $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
 
                     // Encrypt the data using AES-256-CBC cipher
@@ -87,6 +95,7 @@ class IDFC_FundTransfer extends CI_Controller
                     $authObj = new IDFC_Authentication();                   
                     $token = $authObj->index();
                     $token = json_decode($token, true);
+                    // print_r($token);
                     $access_token = $token['access_token'];
 
                     $uniqueId = uniqid();
@@ -95,12 +104,13 @@ class IDFC_FundTransfer extends CI_Controller
                     
                     $headers = [
                         "Content-Type: application/octet-stream",
-                        "Source: INM",
+                        "Source: IML",
                         "correlationId: {$randomString}",
                         "Authorization: Bearer {$access_token}",
                     ];
                     // Make the API call using cURL
-                    $url = 'https://apiext.uat.idfcfirstbank.com/paymenttxns/v1/fundTransfer';
+                    // $url = 'https://apiext.uat.idfcfirstbank.com/paymenttxns/v1/fundTransfer';
+                    $url = 'https://apiext.payments.idfcfirstbank.com/paymenttxns/v1/fundTransfer';
                     $ch = curl_init();
 
                     curl_setopt($ch, CURLOPT_URL, $url);

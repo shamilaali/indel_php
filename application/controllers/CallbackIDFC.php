@@ -46,8 +46,8 @@ class CallbackIDFC extends CI_Controller
                 $MerchantCredential = $object["MerchantCredential"] ?? "";
                 $HMAC = $object["HMAC"] ?? "";
 
-                if (! empty($PayerMobileNumber))
-                {
+                // if (! empty($PayerMobileNumber))
+                // {
                     $url = "http://139.59.76.214:8000/v1/callbacks/IDFC_callback";
                     $ch = curl_init();
                     curl_setopt($ch, CURLOPT_URL, $url);
@@ -72,15 +72,15 @@ class CallbackIDFC extends CI_Controller
                         $output['message'] = 'Something went wrong';
                     }
                         
-                }
-                else
-                {
-                    $output['code'] = '400';
-                    $output['status'] = 'FAILURE';
-                    $output['message'] = 'Required parameters not found';
-                    $error = 'Required parameters not found';
+                // }
+                // else
+                // {
+                //     $output['code'] = '400';
+                //     $output['status'] = 'FAILURE';
+                //     $output['message'] = 'Required parameters not found';
+                //     $error = 'Required parameters not found';
                         
-                }   
+                // }   
             }
             else
             {

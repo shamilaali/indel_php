@@ -74,42 +74,37 @@ if ( ! function_exists('unique_reference_id'))
         return $result;
     }
 }
-//*********** Encryption Function *********************
+// Encryption Function
 function encrypt($plainText, $key) {
     $secretKey = hextobin(md5($key));
-    $initVector = pack("C*", 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f);
-    $openMode = openssl_encrypt($plainText, 'AES-128-CBC', $secretKey, OPENSSL_RAW_DATA, $initVector);
-    $encryptedText = bin2hex($openMode);
-    return $encryptedText;
+    $initVector = "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f";
+    $encryptedText = openssl_encrypt($plainText, 'aes-128-cbc', $secretKey, OPENSSL_RAW_DATA, $initVector);
+    if ($encryptedText === false) {
+        return false;
+    }
+    return bin2hex($encryptedText);
 }
 
-//*********** Decryption Function *********************
+// Decryption Function
 function decrypt($encryptedText, $key) {
     $key = hextobin(md5($key));
-    $initVector = pack("C*", 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f);
+    $initVector = "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f";
     $encryptedText = hextobin($encryptedText);
-    $decryptedText = openssl_decrypt($encryptedText, 'AES-128-CBC', $key, OPENSSL_RAW_DATA, $initVector);
+    $decryptedText = openssl_decrypt($encryptedText, 'aes-128-cbc', $key, OPENSSL_RAW_DATA, $initVector);
     return $decryptedText;
 }
 
-//********** Hexadecimal to Binary function for php 4.0 version ********
+// Hexadecimal to Binary Function
 function hextobin($hexString) {
-    $length = strlen($hexString);
-    $binString = "";
-    $count = 0;
-    while ($count < $length) {
-        $subString = substr($hexString, $count, 2);
-        $packedString = pack("H*", $subString);
-        if ($count == 0) {
-            $binString = $packedString;
-        } else {
-            $binString .= $packedString;
-        }
-
-        $count += 2;
+    if (strlen($hexString) % 2 !== 0) {
+        return false; // Hex string must have an even length
     }
-    return $binString;
+    if (!ctype_xdigit($hexString)) {
+        return false; // Invalid hex characters
+    }
+    return hex2bin($hexString);
 }
+
 //********** To generate ramdom String ********
 function generateRandomString($length = 35) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

@@ -55,8 +55,9 @@ class BBPS_Biller_info extends CI_Controller
                             $plainText = null;
                         }
                     }
-                    
                     $key = $this->config->item('key');
+                    echo "----key---".$key;
+                    echo "----plainText---".$plainText;
                     $encrypt_xml_data = encrypt($plainText, $key);
                     $data['accessCode'] = $this->config->item('accessCode');
                     $data['requestId'] = generateRandomString();
